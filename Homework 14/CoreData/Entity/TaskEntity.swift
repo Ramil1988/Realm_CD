@@ -10,9 +10,10 @@ import CoreData
 
 class TaskEntity: NSManagedObject {
     
-    static func createObjects(task: String, context: NSManagedObjectContext) -> TaskEntity {
+    static func createObjects(task: String, isChecked: Bool, context: NSManagedObjectContext) -> TaskEntity {
         let taskEntity = TaskEntity(context: context)
         taskEntity.task = task
+        taskEntity.isChecked = isChecked
         
         return taskEntity
     }

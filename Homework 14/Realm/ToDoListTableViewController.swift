@@ -11,7 +11,6 @@ import RealmSwift
 class ToDoListTableViewController: UITableViewController {
     
     var cellId = "Cell" // Идентификатор ячейки
-    
     let realm = try! Realm() // Доступ к хранилищу
     var items: Results<TaskObject>!
     
@@ -83,7 +82,6 @@ class ToDoListTableViewController: UITableViewController {
     }
     
     //MARK: Table View Data Source
-    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if items.count != 0 {
             return items.count
@@ -95,23 +93,30 @@ class ToDoListTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
         let item = items[indexPath.row]
         cell.textLabel?.text = item.taskText
+        cell.accessoryType = item.isChecked ? .checkmark : .none
+        
         return cell
     }
     
     //MARK: Table View Delegate
-    
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        
         let editingRow = items[indexPath.row]
-                
         let deleteAction = UITableViewRowAction(style: .default, title: "Delete") { _,_ in
             try! self.realm.write {
                 self.realm.delete(editingRow)
                 tableView.reloadData()
             }
-            
         }
-        
         return [deleteAction]
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let item = items[indexPath.row]
+        try! self.realm.write({
+            item.isChecked = !item.isChecked
+        })
+        
+        tableView.reloadRows(at: [indexPath], with: .automatic)
     }
 }

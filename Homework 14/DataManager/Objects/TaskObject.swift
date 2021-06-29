@@ -10,4 +10,5 @@ import RealmSwift
 
 class TaskObject: Object {
     @objc dynamic var taskText = ""
+    @objc dynamic var isChecked: Bool = false
 }

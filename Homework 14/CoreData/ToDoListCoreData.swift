@@ -9,11 +9,10 @@ import Foundation
 import UIKit
 import CoreData
 
-
 class ToDoListCoreData: UITableViewController {
     
     var itemsArray = [""] // Массив для хранения записей
-    var taskEnities = [TaskEntity]() //
+    var taskEntities = [TaskEntity]() //
     var cellId = "Cell" // Идентификатор ячейки
     
     lazy var context: NSManagedObjectContext = {
@@ -82,7 +81,7 @@ class ToDoListCoreData: UITableViewController {
             
             // Сохраняем в CoreData
             let text = alertTextField.text!
-            let task = TaskEntity.createObjects(task: text, context: self.context)
+            let task = TaskEntity.createObjects(task: text, isChecked: false, context: self.context)
             
             // Обновляем таблицу
             self.tableView.reloadData()
@@ -106,7 +105,9 @@ class ToDoListCoreData: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
         let item = itemsArray[indexPath.row]
-        cell.textLabel?.text = item 
+        cell.textLabel?.text = item
+       
+        
         return cell
     }
     
@@ -116,10 +117,8 @@ class ToDoListCoreData: UITableViewController {
         
         let deleteAction = UITableViewRowAction(style: .default, title: "Delete") { _,_ in
             self.itemsArray.remove(at: indexPath.row)
-            let currentTaskEntity = self.taskEnities[indexPath.row]
+            let currentTaskEntity = self.taskEntities[indexPath.row]
             self.context.delete(currentTaskEntity)
-//            let appDelegate = UIApplication.shared.delegate as! AppDelegate
-//            appDelegate.saveContext()
             
             tableView.reloadData()
         }
@@ -131,7 +130,7 @@ class ToDoListCoreData: UITableViewController {
         
         if let entities = try? TaskEntity.getAll(context: context) {
             itemsArray = entities.compactMap { $0.task } // добавляет в массив значения (tasks), которые не являются nil
-            taskEnities = entities
+            taskEntities = entities
         }
         
         tableView.reloadData()
