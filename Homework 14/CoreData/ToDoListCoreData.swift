@@ -11,9 +11,8 @@ import CoreData
 
 class ToDoListCoreData: UITableViewController {
     
-    var itemsArray = [""] // Массив для хранения записей
     var taskEntities = [TaskEntity]() //
-    var cellId = "Cell" // Идентификатор ячейки
+    var cellId = "CoreDataCustomCell" // Идентификатор ячейки
     
     lazy var context: NSManagedObjectContext = {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -23,7 +22,7 @@ class ToDoListCoreData: UITableViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        appDelegate.saveContext()
+        appDelegate.saveContext() //Сохраняем в CoreData
     }
     
     override func viewDidLoad() {
@@ -77,11 +76,9 @@ class ToDoListCoreData: UITableViewController {
             }
             
             // Добавляем в массив новую задачу из текстового поля
-            self.itemsArray.append((alert.textFields?.first?.text)!)
-            
-            // Сохраняем в CoreData
-            let text = alertTextField.text!
-            let task = TaskEntity.createObjects(task: text, isChecked: false, context: self.context)
+            let inputText = alert.textFields?.first?.text ?? ""
+            let newTaskEntity = TaskEntity.createObjects(task: inputText, context: self.context) // объект в базе данных
+            self.taskEntities.append(newTaskEntity)
             
             // Обновляем таблицу
             self.tableView.reloadData()
@@ -96,27 +93,27 @@ class ToDoListCoreData: UITableViewController {
         present(alert, animated: true, completion: nil) // Вызываем алёрт контроллер
     }
     
-    //MARK: Table View Data Source
+    //MARK: - Table View Data Source
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return itemsArray.count
+        return taskEntities.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
-        let item = itemsArray[indexPath.row]
-        cell.textLabel?.text = item
+        let item = taskEntities[indexPath.row]
+        cell.textLabel?.text = item.task
+        cell.accessoryType = item.isChecked ? .checkmark : .none
        
-        
         return cell
     }
     
-    //MARK: Table View Delegate
+    //MARK: - Table View Delegate
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         
         let deleteAction = UITableViewRowAction(style: .default, title: "Delete") { _,_ in
-            self.itemsArray.remove(at: indexPath.row)
+            self.taskEntities.remove(at: indexPath.row)
             let currentTaskEntity = self.taskEntities[indexPath.row]
             self.context.delete(currentTaskEntity)
             
@@ -126,14 +123,21 @@ class ToDoListCoreData: UITableViewController {
         return [deleteAction]
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedTaskEntity = taskEntities[indexPath.row]
+        selectedTaskEntity.isChecked.toggle()
+        let selectedCell = tableView.cellForRow(at: indexPath)
+        selectedCell?.accessoryType = selectedTaskEntity.isChecked ? .checkmark : .none
+        
+    }
+    
+    //MARK: - Private methods
     private func fetchTask() {
         
         if let entities = try? TaskEntity.getAll(context: context) {
-            itemsArray = entities.compactMap { $0.task } // добавляет в массив значения (tasks), которые не являются nil
             taskEntities = entities
         }
         
         tableView.reloadData()
-        
     }
 }

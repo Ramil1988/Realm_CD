@@ -10,7 +10,7 @@ import RealmSwift
 
 class ToDoListTableViewController: UITableViewController {
     
-    var cellId = "Cell" // Идентификатор ячейки
+    var cellId = "customCell" // Идентификатор ячейки
     let realm = try! Realm() // Доступ к хранилищу
     var items: Results<TaskObject>!
     

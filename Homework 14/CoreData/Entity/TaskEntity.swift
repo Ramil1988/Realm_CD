@@ -10,7 +10,7 @@ import CoreData
 
 class TaskEntity: NSManagedObject {
     
-    static func createObjects(task: String, isChecked: Bool, context: NSManagedObjectContext) -> TaskEntity {
+    static func createObjects(task: String, isChecked: Bool = false, context: NSManagedObjectContext) -> TaskEntity {
         let taskEntity = TaskEntity(context: context)
         taskEntity.task = task
         taskEntity.isChecked = isChecked
@@ -26,5 +26,4 @@ class TaskEntity: NSManagedObject {
                 throw error
             }
         }
-    
 }
