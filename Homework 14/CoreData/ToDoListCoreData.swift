@@ -20,6 +20,7 @@ class ToDoListCoreData: UITableViewController {
         return context
     }()
     
+    //MARK: - Override Methods
     override func viewWillDisappear(_ animated: Bool) {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.saveContext() //Сохраняем в CoreData
@@ -55,7 +56,69 @@ class ToDoListCoreData: UITableViewController {
         addAlertForNewItem()
     }
     
-    func addAlertForNewItem() {
+   
+    //MARK: - Table View Data Source
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return taskEntities.count
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+        let item = taskEntities[indexPath.row]
+        cell.textLabel?.text = item.task
+        cell.accessoryType = item.isChecked ? .checkmark : .none
+        
+        return cell
+    }
+    
+    //MARK: - Table View Delegate
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        
+        let deleteAction = UITableViewRowAction(style: .default, title: "Delete") { _,_ in
+            let currentTaskEntity = self.taskEntities[indexPath.row]
+            self.context.delete(currentTaskEntity)
+            self.taskEntities.remove(at: indexPath.row)
+            tableView.reloadData()
+        }
+        return [deleteAction]
+    }
+    
+    override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let action = UIContextualAction(style: .normal,
+                                        title: "Edit") { [weak self] (action, view, completionHandler) in
+            completionHandler(true)
+            let currentTaskEntity = self?.taskEntities[indexPath.row]
+            self?.context.delete(currentTaskEntity!)
+            self?.taskEntities.remove(at: indexPath.row)
+            self?.editAlertForEditingTask()
+            tableView.reloadData()
+        }
+        action.backgroundColor = .systemBlue
+        self.tableView.reloadData()
+
+        return UISwipeActionsConfiguration(actions: [action])
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedTaskEntity = taskEntities[indexPath.row]
+        selectedTaskEntity.isChecked.toggle()
+        let selectedCell = tableView.cellForRow(at: indexPath)
+        selectedCell?.accessoryType = selectedTaskEntity.isChecked ? .checkmark : .none
+        
+       
+    }
+    
+    //MARK: - Private methods
+    private func fetchTask() {
+        
+        if let entities = try? TaskEntity.getAll(context: context) {
+            taskEntities = entities
+        }
+        tableView.reloadData()
+    }
+    
+    private func addAlertForNewItem() {
         // Создание алёрт контроллера
         let alert = UIAlertController(title: "New Task", message: "Please fill in the field", preferredStyle: .alert)
         
@@ -76,6 +139,7 @@ class ToDoListCoreData: UITableViewController {
             }
             
             // Добавляем в массив новую задачу из текстового поля
+            
             let inputText = alert.textFields?.first?.text ?? ""
             let newTaskEntity = TaskEntity.createObjects(task: inputText, context: self.context) // объект в базе данных
             self.taskEntities.append(newTaskEntity)
@@ -93,51 +157,41 @@ class ToDoListCoreData: UITableViewController {
         present(alert, animated: true, completion: nil) // Вызываем алёрт контроллер
     }
     
-    //MARK: - Table View Data Source
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return taskEntities.count
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
-        let item = taskEntities[indexPath.row]
-        cell.textLabel?.text = item.task
-        cell.accessoryType = item.isChecked ? .checkmark : .none
-       
-        return cell
-    }
-    
-    //MARK: - Table View Delegate
-    
-    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+    private func editAlertForEditingTask() {
+        // Создание алёрт контроллера
+        let alert = UIAlertController(title: "Edit Task", message: "Please fill in the field", preferredStyle: .alert)
         
-        let deleteAction = UITableViewRowAction(style: .default, title: "Delete") { _,_ in
-            self.taskEntities.remove(at: indexPath.row)
-            let currentTaskEntity = self.taskEntities[indexPath.row]
-            self.context.delete(currentTaskEntity)
+        // Создание текстового поля
+        var alertTextField: UITextField!
+        alert.addTextField { textField in
+            alertTextField = textField
+            textField.placeholder = "New Task"
+        }
+        
+        // Создание кнопки для сохранения новых значений
+        let saveAction = UIAlertAction(title: "Save", style: .default) { action in
             
-            tableView.reloadData()
+            // Проверяем не является ли текстовое поле пустым
+            guard alertTextField.text?.isEmpty == false else {
+                print("The text field is empty") // Выводим сообщение на консоль, если поле не заполнено
+                return
+            }
+            
+            // Изменяем в массив новую задачу из текстового поля
+            let inputText = alert.textFields?.first?.text ?? ""
+            let newTaskEntity = TaskEntity.createObjects(task: inputText, context: self.context) // объект в базе данных
+            self.taskEntities.append(newTaskEntity)
+            
+            // Обновляем таблицу
+            self.tableView.reloadData()
         }
         
-        return [deleteAction]
-    }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedTaskEntity = taskEntities[indexPath.row]
-        selectedTaskEntity.isChecked.toggle()
-        let selectedCell = tableView.cellForRow(at: indexPath)
-        selectedCell?.accessoryType = selectedTaskEntity.isChecked ? .checkmark : .none
+        // Создаем кнопку для отмены ввода новой задачи
+        let cancelAction = UIAlertAction(title: "Cancel", style: .destructive, handler: nil)
         
-    }
-    
-    //MARK: - Private methods
-    private func fetchTask() {
+        alert.addAction(saveAction) // Присваиваем алёрту кнопку для сохранения результата
+        alert.addAction(cancelAction) // Присваиваем алерту кнопку для отмены ввода новой задачи
         
-        if let entities = try? TaskEntity.getAll(context: context) {
-            taskEntities = entities
-        }
-        
-        tableView.reloadData()
+        present(alert, animated: true, completion: nil) // Вызываем алёрт контроллер
     }
 }
