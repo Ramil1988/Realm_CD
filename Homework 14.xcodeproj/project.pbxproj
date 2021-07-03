@@ -26,6 +26,7 @@
 		0B4EE602267A04E70039AE1D /* TaskObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4EE601267A04E70039AE1D /* TaskObject.swift */; };
 		0B4EE604267A58380039AE1D /* WeatherObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4EE603267A58380039AE1D /* WeatherObject.swift */; };
 		0B508853268CD33B00A97C95 /* CoreDataCustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B508852268CD33B00A97C95 /* CoreDataCustomCell.swift */; };
+		0B5088552690FFA000A97C95 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5088542690FFA000A97C95 /* CoreDataManager.swift */; };
 		0BFB6BBE267BFA3400FDE461 /* TaskEntity.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0BFB6BBB267BFA3400FDE461 /* TaskEntity.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
@@ -51,6 +52,7 @@
 		0B4EE601267A04E70039AE1D /* TaskObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskObject.swift; sourceTree = "<group>"; };
 		0B4EE603267A58380039AE1D /* WeatherObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherObject.swift; sourceTree = "<group>"; };
 		0B508852268CD33B00A97C95 /* CoreDataCustomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataCustomCell.swift; sourceTree = "<group>"; };
+		0B5088542690FFA000A97C95 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		0BFB6BBC267BFA3400FDE461 /* Homework 14.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Homework 14.xcdatamodel"; sourceTree = "<group>"; };
 		0BFB6BBD267BFA3400FDE461 /* TaskEntity.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TaskEntity.xcdatamodel; sourceTree = "<group>"; };
 		8032FAEC37C0F48F5F505437 /* Pods_Homework_14.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Homework_14.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -137,6 +139,7 @@
 			isa = PBXGroup;
 			children = (
 				0B0D91E4267BA5C400450B15 /* ToDoListCoreData.swift */,
+				0B5088542690FFA000A97C95 /* CoreDataManager.swift */,
 				0B0D91E9267BA9EB00450B15 /* Entity */,
 			);
 			path = CoreData;
@@ -305,6 +308,7 @@
 				0B508853268CD33B00A97C95 /* CoreDataCustomCell.swift in Sources */,
 				0B4EE5FD267A01920039AE1D /* DataManager.swift in Sources */,
 				0B4EE5FF267A04960039AE1D /* RealmManager.swift in Sources */,
+				0B5088552690FFA000A97C95 /* CoreDataManager.swift in Sources */,
 				0B0D91EB267BAA1200450B15 /* TaskEntity.swift in Sources */,
 				0B43657B267575B800E33346 /* ViewController.swift in Sources */,
 				0B436577267575B800E33346 /* AppDelegate.swift in Sources */,

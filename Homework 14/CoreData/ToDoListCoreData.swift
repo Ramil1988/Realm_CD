@@ -7,18 +7,13 @@
 
 import Foundation
 import UIKit
-import CoreData
 
 class ToDoListCoreData: UITableViewController {
     
     var taskEntities = [TaskEntity]() //
     var cellId = "CoreDataCustomCell" // Идентификатор ячейки
     
-    lazy var context: NSManagedObjectContext = {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        let context = appDelegate.persistentContainer.viewContext
-        return context
-    }()
+    var context = CoreDataManager().context
     
     //MARK: - Override Methods
     override func viewWillDisappear(_ animated: Bool) {
@@ -72,18 +67,20 @@ class ToDoListCoreData: UITableViewController {
     }
     
     //MARK: - Table View Delegate
-    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        
-        let deleteAction = UITableViewRowAction(style: .default, title: "Delete") { _,_ in
-            let currentTaskEntity = self.taskEntities[indexPath.row]
-            self.context.delete(currentTaskEntity)
-            self.taskEntities.remove(at: indexPath.row)
+    override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let action = UIContextualAction(style: .normal,
+                                        title: "Delete") { [weak self] (action, view, completionHandler) in
+            completionHandler(true)
+            let currentTaskEntity = self?.taskEntities[indexPath.row]
+            self!.context.delete(currentTaskEntity!)
+            self?.taskEntities.remove(at: indexPath.row)
             tableView.reloadData()
         }
-        return [deleteAction]
+        action.backgroundColor = .systemRed
+        return UISwipeActionsConfiguration(actions: [action])
     }
     
-    override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
         let action = UIContextualAction(style: .normal,
                                         title: "Edit") { [weak self] (action, view, completionHandler) in
@@ -115,12 +112,21 @@ class ToDoListCoreData: UITableViewController {
             self?.present(alert, animated: true, completion: nil) // Вызываем алёрт контроллер
             tableView.reloadData()
         }
-        
         action.backgroundColor = .systemBlue
         self.tableView.reloadData()
-
         return UISwipeActionsConfiguration(actions: [action])
     }
+//    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+//
+//        let deleteAction = UITableViewRowAction(style: .default, title: "Delete") { _,_ in
+//            let currentTaskEntity = self.taskEntities[indexPath.row]
+//            self.context.delete(currentTaskEntity)
+//            self.taskEntities.remove(at: indexPath.row)
+//            tableView.reloadData()
+//        }
+//        return [deleteAction]
+//    }
+    
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedTaskEntity = taskEntities[indexPath.row]

@@ -11,7 +11,8 @@ import RealmSwift
 //класс который отвечает за общение с Реалмом
 
 class RealmManager {
-    internal let realm = try! Realm()  // точка доступа к реалму
+    let realm = try! Realm()  // точка доступа к реалму
+    var items: Results<TaskObject>!
     
     func saveWeather(name: String, weatherImage: String, weatherDescription: String, weatherTemperature: Double) {
         let weatherObject = WeatherObject()

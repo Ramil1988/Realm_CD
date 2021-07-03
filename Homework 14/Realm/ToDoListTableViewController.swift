@@ -6,14 +6,13 @@
 //
 
 import UIKit
-import RealmSwift
 
 class ToDoListTableViewController: UITableViewController {
     
     var cellId = "customCell" // Идентификатор ячейки
-    let realm = try! Realm() // Доступ к хранилищу
-    var items: Results<TaskObject>!
-    
+    let realm = RealmManager().realm// Доступ к хранилищу
+    var items = RealmManager().items
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -47,35 +46,24 @@ class ToDoListTableViewController: UITableViewController {
     
     //MARK: - Table View Data Source
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if items.count != 0 {
-            return items.count
+        if items?.count != 0 {
+            return items!.count
         }
         return 0
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
-        let item = items[indexPath.row]
-        cell.textLabel?.text = item.taskText
-        cell.accessoryType = item.isChecked ? .checkmark : .none
+        let item = items?[indexPath.row]
+        cell.textLabel?.text = item?.taskText
+        cell.accessoryType = item!.isChecked ? .checkmark : .none
         
         return cell
     }
     
     //MARK: - Table View Delegate
-    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let editingRow = items[indexPath.row]
-        let deleteAction = UITableViewRowAction(style: .default, title: "Delete") { _,_ in
-            try! self.realm.write {
-                self.realm.delete(editingRow)
-                tableView.reloadData()
-            }
-        }
-        return [deleteAction]
-    }
-    
-    override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+       
         let action = UIContextualAction(style: .normal,
                                         title: "Edit") { [weak self] (action, view, completionHandler) in
             completionHandler(true)
@@ -90,7 +78,7 @@ class ToDoListTableViewController: UITableViewController {
             }
             // Создание кнопки для сохранения новых значений
             let saveAction = UIAlertAction(title: "Save", style: .default) { action in
-                let editingRow = self?.items[indexPath.row]
+                let editingRow = self?.items?[indexPath.row]
     
                 try! self?.realm.write {
                     editingRow?.taskText = alertTextField.text ?? "Print text!"
@@ -111,18 +99,31 @@ class ToDoListTableViewController: UITableViewController {
         return UISwipeActionsConfiguration(actions: [action])
     }
     
+    override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let action = UIContextualAction(style: .normal,
+                                        title: "Delete") { [weak self] (action, view, completionHandler) in
+            completionHandler(true)
+            let editingRow = self!.items![indexPath.row]
+            try! self!.realm.write {
+                self!.realm.delete(editingRow)
+                tableView.reloadData()
+            }
+        }
+        action.backgroundColor = .systemRed
+        return UISwipeActionsConfiguration(actions: [action])
+    }
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let item = items[indexPath.row]
+        let item = items?[indexPath.row]
         try! self.realm.write({
-            item.isChecked = !item.isChecked
+            item?.isChecked = !item!.isChecked
         })
         
         tableView.reloadRows(at: [indexPath], with: .automatic)
     }
     
     //MARK: - Public methods
-    
     func addAlertForNewItem() {
         // Создание алёрт контроллера
         let alert = UIAlertController(title: "New Task", message: "Please fill in the field", preferredStyle: .alert)
@@ -146,7 +147,7 @@ class ToDoListTableViewController: UITableViewController {
                 self.realm.add(task)
             }
             // Обновление таблицы
-            self.tableView.insertRows(at: [IndexPath.init(row: self.items.count-1, section: 0)], with: .automatic)
+            self.tableView.insertRows(at: [IndexPath.init(row: self.items!.count-1, section: 0)], with: .automatic)
         }
         
         // Создаем кнопку для отмены ввода новой задачи
