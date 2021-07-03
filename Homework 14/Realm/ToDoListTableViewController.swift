@@ -80,18 +80,34 @@ class ToDoListTableViewController: UITableViewController {
                                         title: "Edit") { [weak self] (action, view, completionHandler) in
             completionHandler(true)
             
-            let editingRow = self?.items[indexPath.row]
-            try! self?.realm.write {
-                self?.realm.delete(editingRow!)
-                tableView.reloadData()
-            }
+            let alert = UIAlertController(title: "New Task", message: "Please fill in the field", preferredStyle: .alert)
             
-            self?.addAlertForEditingItem()
-            tableView.reloadData()
+            // Создание текстового поля
+            var alertTextField: UITextField!
+            alert.addTextField { textField in
+                alertTextField = textField
+                textField.placeholder = "New Task"
+            }
+            // Создание кнопки для сохранения новых значений
+            let saveAction = UIAlertAction(title: "Save", style: .default) { action in
+                let editingRow = self?.items[indexPath.row]
+    
+                try! self?.realm.write {
+                    editingRow?.taskText = alertTextField.text ?? "Print text!"
+                }
+                tableView.reloadRows(at: [indexPath], with: .automatic)
+            }
+        
+            // Создаем кнопку для отмены ввода новой задачи
+            let cancelAction = UIAlertAction(title: "Cancel", style: .destructive, handler: nil)
+            
+            alert.addAction(saveAction) // Присваиваем алёрту кнопку для сохранения результата
+            alert.addAction(cancelAction) // Присваиваем алерут кнопку для отмены ввода новой задачи
+            
+            self!.present(alert, animated: true, completion: nil) // Вызываем алёрт контроллер
         }
         
         action.backgroundColor = .systemBlue
-
         return UISwipeActionsConfiguration(actions: [action])
     }
     
@@ -129,54 +145,15 @@ class ToDoListTableViewController: UITableViewController {
             try! self.realm.write {
                 self.realm.add(task)
             }
-            
             // Обновление таблицы
             self.tableView.insertRows(at: [IndexPath.init(row: self.items.count-1, section: 0)], with: .automatic)
         }
         
         // Создаем кнопку для отмены ввода новой задачи
         let cancelAction = UIAlertAction(title: "Cancel", style: .destructive, handler: nil)
-        
         alert.addAction(saveAction) // Присваиваем алёрту кнопку для сохранения результата
         alert.addAction(cancelAction) // Присваиваем алерут кнопку для отмены ввода новой задачи
-        
         present(alert, animated: true, completion: nil) // Вызываем алёрт контроллер
     }
-    
-    func addAlertForEditingItem() {
-        // Создание алёрт контроллера
-        let alert = UIAlertController(title: "Edit Task", message: "Please fill in the field", preferredStyle: .alert)
-        
-        // Создание текстового поля
-        var alertTextField: UITextField!
-        alert.addTextField { textField in
-            alertTextField = textField
-            textField.placeholder = "New Task"
-        }
-        
-        // Создание кнопки для сохранения новых значений
-        let saveAction = UIAlertAction(title: "Save", style: .default) { action in
-            
-            // Проверяем не является ли текстовое поле пустым
-            guard let text = alertTextField.text, !text.isEmpty else { return print("The text field is empty")}
-            let task = TaskObject()
-            task.taskText = text
-            
-            try! self.realm.write {
-                self.realm.add(task)
-            }
-            
-            // Обновление таблицы
-            self.tableView.insertRows(at: [IndexPath.init(row: self.items.count-1, section: 0)], with: .automatic)
-        }
-        
-        // Создаем кнопку для отмены ввода новой задачи
-        let cancelAction = UIAlertAction(title: "Cancel", style: .destructive, handler: nil)
-        
-        alert.addAction(saveAction) // Присваиваем алёрту кнопку для сохранения результата
-        alert.addAction(cancelAction) // Присваиваем алерут кнопку для отмены ввода новой задачи
-        
-        present(alert, animated: true, completion: nil) // Вызываем алёрт контроллер
-    }
-    
+
 }

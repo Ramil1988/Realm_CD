@@ -88,12 +88,34 @@ class ToDoListCoreData: UITableViewController {
         let action = UIContextualAction(style: .normal,
                                         title: "Edit") { [weak self] (action, view, completionHandler) in
             completionHandler(true)
-            let currentTaskEntity = self?.taskEntities[indexPath.row]
-            self?.context.delete(currentTaskEntity!)
-            self?.taskEntities.remove(at: indexPath.row)
-            self?.editAlertForEditingTask()
+            
+            let alert = UIAlertController(title: "Edit Task", message: "Please fill in the field", preferredStyle: .alert)
+            // Создание текстового поля
+            var alertTextField: UITextField!
+            alert.addTextField { textField in
+                alertTextField = textField
+                textField.placeholder = "New Task"
+            }
+            let saveAction = UIAlertAction(title: "Save", style: .default) { [self] action in
+                // Проверяем не является ли текстовое поле пустым
+                guard alertTextField.text?.isEmpty == false else {
+                    print("The text field is empty") // Выводим сообщение на консоль, если поле не заполнено
+                    return
+                }
+                // Изменяем в массив новую задачу из текстового поля
+                let currrentText = self!.taskEntities[indexPath.row]
+                currrentText.task = alert.textFields?.first?.text ?? ""
+             
+                // Обновляем таблицу
+                self?.tableView.reloadData()
+            }
+            let cancelAction = UIAlertAction(title: "Cancel", style: .destructive, handler: nil)
+            alert.addAction(saveAction) // Присваиваем алёрту кнопку для сохранения результата
+            alert.addAction(cancelAction) // Присваиваем алерту кнопку для отмены ввода новой задачи
+            self?.present(alert, animated: true, completion: nil) // Вызываем алёрт контроллер
             tableView.reloadData()
         }
+        
         action.backgroundColor = .systemBlue
         self.tableView.reloadData()
 
@@ -105,8 +127,6 @@ class ToDoListCoreData: UITableViewController {
         selectedTaskEntity.isChecked.toggle()
         let selectedCell = tableView.cellForRow(at: indexPath)
         selectedCell?.accessoryType = selectedTaskEntity.isChecked ? .checkmark : .none
-        
-       
     }
     
     //MARK: - Private methods
@@ -147,45 +167,6 @@ class ToDoListCoreData: UITableViewController {
             // Обновляем таблицу
             self.tableView.reloadData()
         }
-        
-        // Создаем кнопку для отмены ввода новой задачи
-        let cancelAction = UIAlertAction(title: "Cancel", style: .destructive, handler: nil)
-        
-        alert.addAction(saveAction) // Присваиваем алёрту кнопку для сохранения результата
-        alert.addAction(cancelAction) // Присваиваем алерту кнопку для отмены ввода новой задачи
-        
-        present(alert, animated: true, completion: nil) // Вызываем алёрт контроллер
-    }
-    
-    private func editAlertForEditingTask() {
-        // Создание алёрт контроллера
-        let alert = UIAlertController(title: "Edit Task", message: "Please fill in the field", preferredStyle: .alert)
-        
-        // Создание текстового поля
-        var alertTextField: UITextField!
-        alert.addTextField { textField in
-            alertTextField = textField
-            textField.placeholder = "New Task"
-        }
-        
-        // Создание кнопки для сохранения новых значений
-        let saveAction = UIAlertAction(title: "Save", style: .default) { action in
-            
-            // Проверяем не является ли текстовое поле пустым
-            guard alertTextField.text?.isEmpty == false else {
-                print("The text field is empty") // Выводим сообщение на консоль, если поле не заполнено
-                return
-            }
-            
-            // Изменяем в массив новую задачу из текстового поля
-            let inputText = alert.textFields?.first?.text ?? ""
-            let newTaskEntity = TaskEntity.createObjects(task: inputText, context: self.context) // объект в базе данных
-            self.taskEntities.append(newTaskEntity)
-            
-            // Обновляем таблицу
-            self.tableView.reloadData()
-        }
-        
         // Создаем кнопку для отмены ввода новой задачи
         let cancelAction = UIAlertAction(title: "Cancel", style: .destructive, handler: nil)
         
