@@ -18,13 +18,13 @@ class UserModel: NSObject { // настройка модели данных
 }
 
 class ViewController: UIViewController, UITextFieldDelegate {
-
+    
     @IBOutlet weak var nameTxt: UITextField!
     @IBOutlet weak var surnameTxt: UITextField!
-        
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-    
+        
         nameTxt.delegate = self
         surnameTxt.delegate = self
         
@@ -33,9 +33,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
         nameTxt.text = UserSettings.userName // сохраняем предыдущее имя в TXT
         surnameTxt.text = UserSettings.userSurname
-
+        
     }
-
+    
     @IBAction func name() {
         print(nameTxt.text ?? "nil")
     }
@@ -45,7 +45,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func saveAction(_ sender: UIBarButtonItem) {
-
+        
         UserSettings.userName = nameTxt.text
         UserSettings.userSurname = surnameTxt.text
     }
@@ -68,15 +68,3 @@ class ViewController: UIViewController, UITextFieldDelegate {
         textField.layer.addSublayer(myLine)
     }
 }
-
-
-
-//    func encode(with coder: NSCoder) {
-//        coder.encode(name, forKey: "name")
-//        coder.encode(name, forKey: "surname")
-//    }
-//
-//    required init?(coder: NSCoder) {
-//        name = coder.decodeObject(forKey: "name") as? String ?? ""
-//        surmame = coder.decodeObject(forKey: "surname") as? String ?? ""
-//    }

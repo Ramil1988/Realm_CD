@@ -12,7 +12,7 @@ class ToDoListTableViewController: UITableViewController {
     var cellId = "customCell" // Идентификатор ячейки
     let realm = RealmManager().realm// Доступ к хранилищу
     var items = RealmManager().items
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -63,7 +63,7 @@ class ToDoListTableViewController: UITableViewController {
     
     //MARK: - Table View Delegate
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-       
+        
         let action = UIContextualAction(style: .normal,
                                         title: "Edit") { [weak self] (action, view, completionHandler) in
             completionHandler(true)
@@ -79,13 +79,13 @@ class ToDoListTableViewController: UITableViewController {
             // Создание кнопки для сохранения новых значений
             let saveAction = UIAlertAction(title: "Save", style: .default) { action in
                 let editingRow = self?.items?[indexPath.row]
-    
+                
                 try! self?.realm.write {
                     editingRow?.taskText = alertTextField.text ?? "Print text!"
                 }
                 tableView.reloadRows(at: [indexPath], with: .automatic)
             }
-        
+            
             // Создаем кнопку для отмены ввода новой задачи
             let cancelAction = UIAlertAction(title: "Cancel", style: .destructive, handler: nil)
             
@@ -156,5 +156,5 @@ class ToDoListTableViewController: UITableViewController {
         alert.addAction(cancelAction) // Присваиваем алерут кнопку для отмены ввода новой задачи
         present(alert, animated: true, completion: nil) // Вызываем алёрт контроллер
     }
-
+    
 }

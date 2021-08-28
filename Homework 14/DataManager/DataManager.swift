@@ -12,7 +12,7 @@ class DataManager {
     var realmManager = RealmManager()
     
     func saveWeather (name: String, weatherImage: String, weatherDescription: String, weatherTemperature: Double) {
-       realmManager.saveWeather(name: name, weatherImage: weatherImage, weatherDescription: weatherDescription, weatherTemperature: weatherTemperature)
+        realmManager.saveWeather(name: name, weatherImage: weatherImage, weatherDescription: weatherDescription, weatherTemperature: weatherTemperature)
     }
     
     func getWeather() -> WeatherRealm? {

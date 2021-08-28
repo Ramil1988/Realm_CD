@@ -7,7 +7,6 @@
 
 import UIKit
 
-
 class CoreDataCustomCell: UITableViewCell {
     
     @IBOutlet weak var inputTextfieldCoreData: UITextField!

@@ -51,7 +51,7 @@ class ToDoListCoreData: UITableViewController {
         addAlertForNewItem()
     }
     
-   
+    
     //MARK: - Table View Data Source
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return taskEntities.count
@@ -102,7 +102,7 @@ class ToDoListCoreData: UITableViewController {
                 // Изменяем в массив новую задачу из текстового поля
                 let currrentText = self!.taskEntities[indexPath.row]
                 currrentText.task = alert.textFields?.first?.text ?? ""
-             
+                
                 // Обновляем таблицу
                 self?.tableView.reloadData()
             }
@@ -116,17 +116,6 @@ class ToDoListCoreData: UITableViewController {
         self.tableView.reloadData()
         return UISwipeActionsConfiguration(actions: [action])
     }
-//    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-//
-//        let deleteAction = UITableViewRowAction(style: .default, title: "Delete") { _,_ in
-//            let currentTaskEntity = self.taskEntities[indexPath.row]
-//            self.context.delete(currentTaskEntity)
-//            self.taskEntities.remove(at: indexPath.row)
-//            tableView.reloadData()
-//        }
-//        return [deleteAction]
-//    }
-    
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedTaskEntity = taskEntities[indexPath.row]

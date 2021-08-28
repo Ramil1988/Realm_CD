@@ -22,7 +22,7 @@ class RealmManager {
         weatherObject.weatherTemperature = weatherTemperature
         
         try? realm.write { () -> Void in
-             realm.add(weatherObject)
+            realm.add(weatherObject)
         }
     }
     
@@ -31,5 +31,4 @@ class RealmManager {
         let weather = WeatherRealm(name: objects?.weatherCityName, feelsLike: objects?.weatherTemperature, icon: objects?.weatherImage, weatherDescription: objects?.weatherDescription)
         return weather
     }
-
 }

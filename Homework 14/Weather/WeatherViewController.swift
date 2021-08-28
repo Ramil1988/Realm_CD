@@ -23,7 +23,6 @@ class WeatherViewController: UIViewController {
         settingElementsOfView()
         self.dataLabel.text = DateFormatter.localizedString(from: Date(), dateStyle: .long, timeStyle: .none)
         
-        
         let weather = DataManager().getWeather()
         self.cityLabel.text = weather?.name
         self.imageWeather.image = UIImage(named: weather?.icon ?? "50n")
@@ -110,12 +109,10 @@ class WeatherViewController: UIViewController {
                 self.imageWeather.image = UIImage(named: weather?.list?.first?.weather?.first?.icon ?? "50n")
                 self.descriptionLabel.text = weather?.list?.first?.weather?.first?.weatherDescription
                 self.temperatureLabel.text = "\(weather?.list?.first?.main?.feelsLike ?? 0)°"
-            
+                
                 DataManager().saveWeather(name: weather?.city?.name ?? "No data", weatherImage: weather?.list?.first?.weather?.first?.icon ?? "50n", weatherDescription: weather?.list?.first?.weather?.first?.weatherDescription ?? "No data", weatherTemperature: weather?.list?.first?.main?.feelsLike ?? 0)
-    
             }
         }
-    
     }
 }
 

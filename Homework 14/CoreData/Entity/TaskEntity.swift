@@ -19,11 +19,11 @@ class TaskEntity: NSManagedObject {
     }
     
     class func getAll(context: NSManagedObjectContext) throws -> [TaskEntity] {
-            let request: NSFetchRequest<TaskEntity> = TaskEntity.fetchRequest()
-            do {
-                return try context.fetch(request)
-            } catch {
-                throw error
-            }
+        let request: NSFetchRequest<TaskEntity> = TaskEntity.fetchRequest()
+        do {
+            return try context.fetch(request)
+        } catch {
+            throw error
         }
+    }
 }

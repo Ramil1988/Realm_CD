@@ -42,28 +42,3 @@ final class UserSettings {
         }
     }
 }
-
-
-
-
-
-
-
-
-//static var userModel: UserModel! {
-//    
-//    get {
-//        guard let savedData = UserDefaults.standard.object(forKey: UsersKeys.userModel.rawValue) as? Data, let decodedModel = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(savedData) as? UserModel else { return nil }
-//        return decodedModel
-//    }
-//    
-//    set {
-//        let defaults = UserDefaults.standard
-//        let key = UsersKeys.userModel.rawValue
-//        
-//        guard let userModel = newValue else { return }
-//        if let savedData = try? NSKeyedArchiver.archivedData(withRootObject: userModel, requiringSecureCoding: false) {
-//            defaults.set(savedData, forKey: key)
-//        }
-//    }
-//}
