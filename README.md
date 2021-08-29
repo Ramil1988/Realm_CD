@@ -1,5 +1,5 @@
 # Storing-Data-using-Realm-and-CoreData
-This is a very simple App using CoreData, UserDafaults and Realm for storing Data. There is a several screens on the App, which of them uses diffetent types of frameworks for storing data. On the first screen you can type and then store the name and surname on the middle of the screen: in this case we use UserDafaults for storing Data. For storing Data you need to click on the Save button. On the same screen the are the buttons for switching to other screens - ToDo Lists and Weather screen. 
+This is a very simple App using CoreData, UserDafaults and Realm for storing Data. There is a several screens on the App, which of them uses different types of frameworks for storing data. On the first screen you can type and then store the name and surname on the middle of the screen: in this case we use UserDafaults for storing Data. For storing Data you need to click on the Save button. On the same screen the are the buttons for switching to other screens - ToDo Lists and Weather screen. 
 
 ![imgonline-com-ua-Resize-qSO8r4mtyZm](https://user-images.githubusercontent.com/78174628/131264009-244bf6a0-bbb3-46c6-93b3-7c198b8cbd11.jpg)
 
