@@ -107,7 +107,6 @@
 				0B4365912677A1E300E33346 /* CoreData */,
 				0B4365922677C93900E33346 /* Weather */,
 				0B43657C267575B800E33346 /* Main.storyboard */,
-				0B508852268CD33B00A97C95 /* CoreDataCustomCell.swift */,
 				0B436582267575B900E33346 /* Assets.xcassets */,
 				0B436576267575B800E33346 /* AppDelegate.swift */,
 				0B436578267575B800E33346 /* SceneDelegate.swift */,
@@ -140,6 +139,7 @@
 			children = (
 				0B0D91E4267BA5C400450B15 /* ToDoListCoreData.swift */,
 				0B5088542690FFA000A97C95 /* CoreDataManager.swift */,
+				0B508852268CD33B00A97C95 /* CoreDataCustomCell.swift */,
 				0B0D91E9267BA9EB00450B15 /* Entity */,
 			);
 			path = CoreData;
